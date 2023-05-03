@@ -2,64 +2,13 @@ import React from "react";
 
 class CartItem extends React.Component {
 
-    constructor () {
-        super();
-
-        this.state = {
-            price: 999,
-            title: 'phone',
-            qty: 1,
-            img: ''
-        }
-    }
-
-    increaseQuantity = () => {
-
-        // console.log(this.state)
-        // this.state.qty = this.state.qty + 1;
-        
-        //setState form 1 
-        // this.setState({
-        //     qty: this.state.qty + 1
-        // });
-
-
-        //setState form 2
-        this.setState((prevState) => {
-            return {
-                qty: prevState.qty + 1
-            }
-        });
-    }
-
-    decreaseQuantity = () => {
-
-        this.setState((prevState) => {
-
-            if(this.state.qty <= 1) {
-                return {
-                    qty: 0
-                }
-            }
-
-            else {
-                return {
-                    qty: prevState.qty - 1
-                }
-            }
-        });
-    }
-
-    deleteItem = () => {
-
-        this.setState({
-            qty: 0
-        });
-    }
-
     render() {
 
-        const {price, title, qty} = this.state;
+        console.log(this.props);
+
+        const {price, title, qty} = this.props.product;
+
+        const {product, onDecreaseQuantity, onDeleteProduct, onIncreaseQuantity} = this.props;
 
         return (
             <div className="cart-item">
@@ -78,21 +27,21 @@ class CartItem extends React.Component {
                             alt="increase" 
                             className="action-icons" 
                             src="https://img.icons8.com/?size=1x&id=14092&format=png"
-                            onClick={this.increaseQuantity}
+                            onClick={() => onIncreaseQuantity(product)}
                         ></img>
                         
                         <img 
                             alt="decrease" 
                             className="action-icons" 
                             src="https://img.icons8.com/?size=1x&id=14088&format=png"
-                            onClick={this.decreaseQuantity}
+                            onClick={() => onDecreaseQuantity(product)}
                         ></img>
                         
                         <img 
                             alt="delete" 
                             className="action-icons" 
                             src="https://img.icons8.com/?size=1x&id=67884&format=png"
-                            onClick={this.deleteItem}
+                            onClick={() => onDeleteProduct(product.id)}
                         ></img>
                     </div>
                 </div>
