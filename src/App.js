@@ -30,11 +30,35 @@ class App extends React.Component {
 
 componentDidMount() {
 
+  // firebase
+  //   .firestore()
+  //   .collection('products')
+  //   .get()
+  //   .then((snapshot) => {
+  //       // console.log(snapshot);
+
+  //       snapshot.docs.map((doc) => {
+  //         console.log(doc.data());
+  //         return ''
+  //       });
+
+  //       const products = snapshot.docs.map((doc) => {
+  //         const data = doc.data();
+
+  //         data['id'] = doc.id;
+
+  //         return data;
+  //       });
+
+  //       this.setState({
+  //         products
+  //       })
+  //   })
+
   firebase
     .firestore()
     .collection('products')
-    .get()
-    .then((snapshot) => {
+    .onSnapshot((snapshot) => {
         // console.log(snapshot);
 
         snapshot.docs.map((doc) => {
@@ -64,11 +88,18 @@ handleIncreaseQuantity = (product) => {
 
     const index = products.indexOf(product);
 
-    products[index].qty += 1;
+    const docRef = firebase.firestore().collection('products').doc(products[index].id);
 
-    this.setState({
-        products: products
-    });
+    docRef
+      .update({
+        qty: products[index].qty + 1
+      })
+      .then(() => {
+        console.log('Updated successfully');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 }
 
 handleDecreaseQuantity = (product) => {
@@ -77,22 +108,35 @@ handleDecreaseQuantity = (product) => {
 
     const index = products.indexOf(product);
 
-    if(products[index].qty > 0) {
-        products[index].qty -= 1;
+    if(products[index].qty === 0) {
+        return;
     }
 
-    this.setState({
-        products: products
-    });
+    const docRef = firebase.firestore().collection('products').doc(products[index].id);
+
+    docRef
+      .update({
+        qty: products[index].qty - 1
+      })
+      .then(() => {
+        console.log('Updated successfully');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 }
 
 handleDeleteProduct = (id) => {
-    const {products} = this.state;
 
-    const items = products.filter((item) => item.id !== id);
+  const docRef = firebase.firestore().collection('products').doc(id);
 
-    this.setState({
-        products: items
+  docRef
+    .delete()
+    .then(() => {
+      console.log('Delted successfully');
+    })
+    .catch((error) => {
+      console.log(error);
     });
 }
 
